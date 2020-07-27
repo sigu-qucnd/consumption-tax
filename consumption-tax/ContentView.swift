@@ -55,13 +55,21 @@ struct ConsumptionView : View {
     @State var playtitle = "play"
     @State private var consumption = ""
     @State private var consumptionMessage = ""
-    
+    @State var setNumber = ""
     var body: some View {
         VStack {
                 Text(playtitle).font(.title).foregroundColor(.orange).padding()
             TextField("入力値", text: $consumption,
             onCommit: {
-                self.consumptionMessage = "消費税込みは、\(self.consumption)円です。"   //
+                if self.consumption.components(separatedBy: CharacterSet.decimalDigits).joined().count == 0 {
+                    let num = Double(self.consumption)
+                    self.setNumber = "金額は、\(String(describing: num! ))円です。\n消費税は、\(String(format: "%.2f",num! * 0.1))円です。\n消費税を含めた金額は、\(String(describing: num! + num! * 0.1 ))円です。"
+                }else {
+                    self.setNumber = "文字列が含まれてます"
+                }
+                
+                
+                self.consumptionMessage = self.setNumber  //
                 
             })
                 .textFieldStyle(RoundedBorderTextFieldStyle())  // 入力域のまわりを枠で囲む
